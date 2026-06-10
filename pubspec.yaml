@@ -40,6 +40,9 @@ dependencies:
   # Secure storage
   flutter_secure_storage: ^9.2.2
 
+  # Crash reporting
+  sentry_flutter: ^8.10.0
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:

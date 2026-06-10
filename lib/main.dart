@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/env.dart';
@@ -8,7 +9,24 @@ import 'data/services/powersync_service.dart';
 import 'router.dart';
 import 'ui/core/slate_theme.dart';
 
+// Passed at build time: flutter build --dart-define=SENTRY_DSN=...
+const _sentryDsn = String.fromEnvironment('SENTRY_DSN');
+
 Future<void> main() async {
+  if (_sentryDsn.isNotEmpty) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = _sentryDsn;
+        options.tracesSampleRate = 0.2;
+      },
+      appRunner: _run,
+    );
+  } else {
+    await _run();
+  }
+}
+
+Future<void> _run() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(

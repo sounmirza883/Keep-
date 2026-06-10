@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AppFunctions (Android 16+) — exposes Slate actions to the system
+     agent ecosystem so assistants can create notes/tasks on the user's
+     behalf. Referenced from AndroidManifest.xml meta-data. -->
+<app-functions xmlns:android="http://schemas.android.com/apk/res/android">
+    <app-function
+        name="createNote"
+        label="@string/fn_create_note"
+        description="Create a new note in Slate"
+        parameters="title:String, content:String?" />
+
+    <app-function
+        name="createTask"
+        label="@string/fn_create_task"
+        description="Create a new task in Slate"
+        parameters="title:String, dueDate:String?, priority:String?" />
+</app-functions>
