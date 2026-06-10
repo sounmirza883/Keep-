@@ -1,0 +1,75 @@
+workflows:
+  android-workflow:
+    name: Android Build
+    environment:
+      flutter: 3.29.x
+      java: 17
+    scripts:
+      - flutter pub get
+      - dart run build_runner build --delete-conflicting-outputs
+      - flutter build apk --release
+      - flutter build appbundle --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      - build/app/outputs/bundle/release/app-release.aab
+    publishing:
+      google_play:
+        credentials: $GPLAY_SERVICE_ACCOUNT
+        track: internal
+
+  ios-workflow:
+    name: iOS Build
+    environment:
+      flutter: 3.29.x
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - flutter pub get
+      - dart run build_runner build --delete-conflicting-outputs
+      - flutter build ios --release --no-codesign
+      - xcode-project use-profiles
+      - xcode-project build-ipa
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
+
+  macos-workflow:
+    name: macOS Build
+    environment:
+      flutter: 3.29.x
+      xcode: latest
+    scripts:
+      - flutter pub get
+      - dart run build_runner build --delete-conflicting-outputs
+      - flutter build macos --release
+      - create-dmg build/macos/Build/Products/Release/Slate.app
+    artifacts:
+      - "*.dmg"
+
+  windows-workflow:
+    name: Windows Build
+    environment:
+      flutter: 3.29.x
+    instance_type: windows_x2
+    scripts:
+      - flutter pub get
+      - dart run build_runner build --delete-conflicting-outputs
+      - flutter build windows --release
+    artifacts:
+      - build/windows/**/*.exe
+
+  web-workflow:
+    name: Web Build
+    environment:
+      flutter: 3.29.x
+    scripts:
+      - flutter pub get
+      - dart run build_runner build --delete-conflicting-outputs
+      - flutter build web --wasm --release
+    artifacts:
+      - build/web/
