@@ -12,6 +12,8 @@ import 'ui/features/auth/views/magic_link_screen.dart';
 import 'ui/features/auth/views/register_screen.dart';
 import 'ui/features/notes/views/note_editor_screen.dart';
 import 'ui/features/notes/views/note_list_screen.dart';
+import 'ui/features/search/views/search_screen.dart';
+import 'ui/features/settings/views/settings_screen.dart';
 import 'ui/features/tasks/views/task_board_screen.dart';
 import 'ui/features/tasks/views/task_form_screen.dart';
 import 'ui/features/tasks/views/task_list_screen.dart';
@@ -45,6 +47,8 @@ GoRouter router(Ref ref) {
         builder: (_, state) =>
             NoteEditorScreen(noteId: state.pathParameters['noteId']!),
       ),
+      GoRoute(path: '/search', builder: (_, __) => const SearchScreen()),
+      GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
       GoRoute(path: '/tasks', builder: (_, __) => const TaskListScreen()),
       GoRoute(path: '/tasks/board', builder: (_, __) => const TaskBoardScreen()),
       GoRoute(path: '/tasks/new', builder: (_, __) => const TaskFormScreen()),

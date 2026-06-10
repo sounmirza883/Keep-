@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../domain/use_cases/auto_tag_use_case.dart';
 import '../domain/use_cases/smart_search_use_case.dart';
 import '../domain/use_cases/summarize_note_use_case.dart';
+import 'repositories/attachment_repository.dart';
 import 'repositories/note_repository.dart';
 import 'repositories/tag_repository.dart';
 import 'repositories/task_repository.dart';
@@ -48,6 +49,12 @@ TaskRepository taskRepository(Ref ref) =>
 @riverpod
 TagRepository tagRepository(Ref ref) =>
     TagRepository(ref.watch(slateDbProvider));
+
+@riverpod
+AttachmentRepository attachmentRepository(Ref ref) => AttachmentRepository(
+      db: ref.watch(slateDbProvider),
+      supabase: ref.watch(supabaseProvider),
+    );
 
 @riverpod
 SummarizeNoteUseCase summarizeNoteUseCase(Ref ref) =>

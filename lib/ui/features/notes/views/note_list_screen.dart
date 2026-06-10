@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/slate_nav_bar.dart';
 import '../../../core/sync_status_indicator.dart';
-import '../../auth/view_models/auth_view_model_provider.dart';
 import '../view_models/note_view_model_providers.dart';
 
 class NoteListScreen extends ConsumerWidget {
@@ -23,9 +22,14 @@ class NoteListScreen extends ConsumerWidget {
             actions: [
               const SyncStatusIndicator(),
               IconButton(
-                icon: const Icon(Icons.logout),
-                tooltip: 'Sign out',
-                onPressed: () => ref.read(authViewModelProvider).signOut(),
+                icon: const Icon(Icons.search),
+                tooltip: 'Search',
+                onPressed: () => context.go('/search'),
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                tooltip: 'Settings',
+                onPressed: () => context.go('/settings'),
               ),
             ],
           ),
