@@ -7,18 +7,20 @@ class SlateNavBar extends StatelessWidget {
 
   final int currentIndex;
 
+  static void navigateTo(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        context.go('/notes');
+      case 1:
+        context.go('/tasks');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
       selectedIndex: currentIndex,
-      onDestinationSelected: (index) {
-        switch (index) {
-          case 0:
-            context.go('/notes');
-          case 1:
-            context.go('/tasks');
-        }
-      },
+      onDestinationSelected: (index) => navigateTo(context, index),
       destinations: const [
         NavigationDestination(icon: Icon(Icons.note_outlined), label: 'Notes'),
         NavigationDestination(icon: Icon(Icons.check_circle_outline), label: 'Tasks'),

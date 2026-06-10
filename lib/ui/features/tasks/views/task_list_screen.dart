@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../data/models/task.dart';
-import '../../../core/slate_nav_bar.dart';
+import '../../../core/adaptive_nav_scaffold.dart';
 import '../../../core/sync_status_indicator.dart';
 import '../view_models/task_list_view_model.dart';
 import '../view_models/task_view_model_providers.dart';
@@ -18,7 +18,8 @@ class TaskListScreen extends ConsumerWidget {
     return ListenableBuilder(
       listenable: vm,
       builder: (context, _) {
-        return Scaffold(
+        return AdaptiveNavScaffold(
+          currentIndex: 1,
           appBar: AppBar(
             title: const Text('Tasks'),
             actions: [
@@ -39,7 +40,6 @@ class TaskListScreen extends ConsumerWidget {
             onPressed: () => context.go('/tasks/new'),
             child: const Icon(Icons.add),
           ),
-          bottomNavigationBar: const SlateNavBar(currentIndex: 1),
         );
       },
     );

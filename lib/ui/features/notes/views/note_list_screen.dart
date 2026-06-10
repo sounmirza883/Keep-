@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/slate_nav_bar.dart';
+import '../../../core/adaptive_nav_scaffold.dart';
 import '../../../core/sync_status_indicator.dart';
+import '../view_models/note_list_view_model.dart';
 import '../view_models/note_view_model_providers.dart';
 
 class NoteListScreen extends ConsumerWidget {
@@ -16,7 +17,8 @@ class NoteListScreen extends ConsumerWidget {
     return ListenableBuilder(
       listenable: vm,
       builder: (context, _) {
-        return Scaffold(
+        return AdaptiveNavScaffold(
+          currentIndex: 0,
           appBar: AppBar(
             title: const Text('Notes'),
             actions: [
@@ -57,7 +59,57 @@ class NoteListScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-            _ => ListView.builder(
+            _ => Column(
+                children: [
+                  if (vm.allTags.isNotEmpty)
+                    SizedBox(
+                      height: 48,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: FilterChip(
+                              label: const Text('All'),
+                              selected: vm.selectedTag == null,
+                              onSelected: (_) => vm.filterByTag(null),
+                            ),
+                          ),
+                          for (final tag in vm.allTags)
+                            Padding(
+                              padding: const EdgeInsets.all(6),
+                              child: FilterChip(
+                                label: Text(tag.name),
+                                selected: vm.selectedTag?.id == tag.id,
+                                onSelected: (selected) =>
+                                    vm.filterByTag(selected ? tag : null),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  Expanded(child: _buildNoteList(context, vm)),
+                ],
+              ),
+          },
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              final note = await vm.createNote();
+              if (context.mounted) context.go('/notes/${note.id}/edit');
+            },
+            child: const Icon(Icons.add),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNoteList(BuildContext context, NoteListViewModel vm) {
+    if (vm.notes.isEmpty) {
+      return const Center(child: Text('No notes match this tag'));
+    }
+    return ListView.builder(
                 itemCount: vm.notes.length,
                 itemBuilder: (context, index) {
                   final note = vm.notes[index];
@@ -92,18 +144,6 @@ class NoteListScreen extends ConsumerWidget {
                     ),
                   );
                 },
-              ),
-          },
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              final note = await vm.createNote();
-              if (context.mounted) context.go('/notes/${note.id}/edit');
-            },
-            child: const Icon(Icons.add),
-          ),
-          bottomNavigationBar: const SlateNavBar(currentIndex: 0),
-        );
-      },
-    );
+              );
   }
 }

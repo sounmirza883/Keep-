@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../data/providers.dart';
 import 'note_editor_view_model.dart';
 import 'note_list_view_model.dart';
+import 'note_tags_view_model.dart';
 
 part 'note_view_model_providers.g.dart';
 
@@ -12,7 +13,19 @@ NoteListViewModel noteListViewModel(Ref ref) {
   final userId = ref.watch(currentUserIdProvider);
   final vm = NoteListViewModel(
     repository: ref.watch(noteRepositoryProvider),
+    tagRepository: ref.watch(tagRepositoryProvider),
     userId: userId ?? '',
+  );
+  ref.onDispose(vm.dispose);
+  return vm;
+}
+
+@riverpod
+NoteTagsViewModel noteTagsViewModel(Ref ref, String noteId) {
+  final vm = NoteTagsViewModel(
+    repository: ref.watch(tagRepositoryProvider),
+    userId: ref.watch(currentUserIdProvider) ?? '',
+    noteId: noteId,
   );
   ref.onDispose(vm.dispose);
   return vm;

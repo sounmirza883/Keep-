@@ -27,6 +27,15 @@ class TagRepository {
         .map(_mapRows);
   }
 
+  Stream<Set<String>> watchNoteIdsWithTag(String tagId) {
+    return _db
+        .watch(
+          'SELECT note_id FROM note_tags WHERE tag_id = ?',
+          parameters: [tagId],
+        )
+        .map((rows) => rows.map((r) => r['note_id'] as String).toSet());
+  }
+
   Future<Tag> createTag({
     required String userId,
     required String name,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -64,6 +65,23 @@ class SlateApp extends ConsumerWidget {
       darkTheme: SlateTheme.dark,
       themeMode: ThemeMode.system,
       routerConfig: router,
+      builder: (context, child) {
+        // Desktop/web keyboard shortcuts. Cmd on macOS, Ctrl elsewhere —
+        // both registered so the same build works everywhere.
+        return CallbackShortcuts(
+          bindings: {
+            const SingleActivator(LogicalKeyboardKey.keyK, control: true):
+                () => router.go('/search'),
+            const SingleActivator(LogicalKeyboardKey.keyK, meta: true):
+                () => router.go('/search'),
+            const SingleActivator(LogicalKeyboardKey.keyN, control: true):
+                () => router.go('/notes'),
+            const SingleActivator(LogicalKeyboardKey.keyN, meta: true):
+                () => router.go('/notes'),
+          },
+          child: Focus(autofocus: true, child: child ?? const SizedBox.shrink()),
+        );
+      },
     );
   }
 }

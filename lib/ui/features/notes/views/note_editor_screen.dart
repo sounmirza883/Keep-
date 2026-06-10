@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../data/providers.dart';
 import '../view_models/note_editor_view_model.dart';
 import '../view_models/note_view_model_providers.dart';
+import 'note_tag_chips.dart';
 
 class NoteEditorScreen extends ConsumerStatefulWidget {
   const NoteEditorScreen({super.key, required this.noteId});
@@ -86,6 +87,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                       border: InputBorder.none,
                     ),
                   ),
+                  NoteTagChips(noteId: widget.noteId),
                   const Divider(height: 1),
                   Expanded(
                     child: TextField(
