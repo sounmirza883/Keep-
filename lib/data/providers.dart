@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../domain/use_cases/auto_tag_use_case.dart';
+import '../domain/use_cases/smart_search_use_case.dart';
+import '../domain/use_cases/summarize_note_use_case.dart';
 import 'repositories/note_repository.dart';
 import 'repositories/tag_repository.dart';
 import 'repositories/task_repository.dart';
@@ -45,3 +48,21 @@ TaskRepository taskRepository(Ref ref) =>
 @riverpod
 TagRepository tagRepository(Ref ref) =>
     TagRepository(ref.watch(slateDbProvider));
+
+@riverpod
+SummarizeNoteUseCase summarizeNoteUseCase(Ref ref) =>
+    SummarizeNoteUseCase(ref.watch(nativeAiProvider));
+
+@riverpod
+AutoTagUseCase autoTagUseCase(Ref ref) =>
+    AutoTagUseCase(ref.watch(nativeAiProvider));
+
+@riverpod
+SmartSearchUseCase smartSearchUseCase(Ref ref) => SmartSearchUseCase(
+      notes: ref.watch(noteRepositoryProvider),
+      ai: ref.watch(nativeAiProvider),
+    );
+
+/// Whether on-device AI is available on this hardware (cached per app run).
+@Riverpod(keepAlive: true)
+Future<bool> aiAvailable(Ref ref) => ref.watch(nativeAiProvider).isAvailable;

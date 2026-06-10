@@ -23,6 +23,8 @@ NoteEditorViewModel noteEditorViewModel(Ref ref, String noteId) {
   final vm = NoteEditorViewModel(
     repository: ref.watch(noteRepositoryProvider),
     noteId: noteId,
+    summarizeUseCase: ref.watch(summarizeNoteUseCaseProvider),
+    autoTagUseCase: ref.watch(autoTagUseCaseProvider),
   );
   ref.onDispose(vm.dispose);
   return vm;
