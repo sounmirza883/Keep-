@@ -1,0 +1,63 @@
+name: slate
+description: Cross-platform offline-first workspace for notes, tasks, and documents.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.7.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management / DI
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Local DB
+  drift: ^2.22.0
+  sqlite3_flutter_libs: ^0.5.26
+  path_provider: ^2.1.4
+  path: ^1.9.0
+
+  # Sync / Backend
+  powersync: ^1.10.0
+  supabase_flutter: ^2.8.0
+
+  # Domain models
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # Navigation
+  go_router: ^14.6.2
+
+  # Networking
+  dio: ^5.7.0
+
+  # Env
+  envied: ^0.5.4+1
+
+  # Ordering
+  fractional_indexing: ^0.0.5
+
+  # Secure storage
+  flutter_secure_storage: ^9.2.2
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+  build_runner: ^2.4.13
+  riverpod_generator: ^2.6.3
+  drift_dev: ^2.22.0
+  freezed: ^2.5.7
+  json_serializable: ^6.9.0
+  envied_generator: ^0.5.4+1
+
+  patrol: ^3.15.2
+
+flutter:
+  uses-material-design: true
