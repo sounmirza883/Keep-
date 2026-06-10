@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'repositories/note_repository.dart';
+import 'repositories/tag_repository.dart';
+import 'repositories/task_repository.dart';
 import 'services/native_ai_service.dart';
 import 'services/powersync_service.dart';
 
@@ -35,3 +37,11 @@ String? currentUserId(Ref ref) {
 @riverpod
 NoteRepository noteRepository(Ref ref) =>
     NoteRepository(ref.watch(slateDbProvider));
+
+@riverpod
+TaskRepository taskRepository(Ref ref) =>
+    TaskRepository(ref.watch(slateDbProvider));
+
+@riverpod
+TagRepository tagRepository(Ref ref) =>
+    TagRepository(ref.watch(slateDbProvider));

@@ -37,9 +37,6 @@ dependencies:
   # Env
   envied: ^0.5.4+1
 
-  # Ordering
-  fractional_indexing: ^0.0.5
-
   # Secure storage
   flutter_secure_storage: ^9.2.2
 

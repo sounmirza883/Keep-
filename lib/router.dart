@@ -12,6 +12,9 @@ import 'ui/features/auth/views/magic_link_screen.dart';
 import 'ui/features/auth/views/register_screen.dart';
 import 'ui/features/notes/views/note_editor_screen.dart';
 import 'ui/features/notes/views/note_list_screen.dart';
+import 'ui/features/tasks/views/task_board_screen.dart';
+import 'ui/features/tasks/views/task_form_screen.dart';
+import 'ui/features/tasks/views/task_list_screen.dart';
 
 part 'router.g.dart';
 
@@ -41,6 +44,14 @@ GoRouter router(Ref ref) {
         path: '/notes/:noteId/edit',
         builder: (_, state) =>
             NoteEditorScreen(noteId: state.pathParameters['noteId']!),
+      ),
+      GoRoute(path: '/tasks', builder: (_, __) => const TaskListScreen()),
+      GoRoute(path: '/tasks/board', builder: (_, __) => const TaskBoardScreen()),
+      GoRoute(path: '/tasks/new', builder: (_, __) => const TaskFormScreen()),
+      GoRoute(
+        path: '/tasks/:taskId/edit',
+        builder: (_, state) =>
+            TaskFormScreen(taskId: state.pathParameters['taskId']),
       ),
     ],
   );

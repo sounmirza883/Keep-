@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/slate_nav_bar.dart';
 import '../../../core/sync_status_indicator.dart';
 import '../../auth/view_models/auth_view_model_provider.dart';
 import '../view_models/note_view_model_providers.dart';
@@ -96,6 +97,7 @@ class NoteListScreen extends ConsumerWidget {
             },
             child: const Icon(Icons.add),
           ),
+          bottomNavigationBar: const SlateNavBar(currentIndex: 0),
         );
       },
     );
