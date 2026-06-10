@@ -2,8 +2,7 @@ import 'package:powersync/powersync.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/env.dart';
-
-const Schema appSchema = Schema([]);
+import '../drift/schema.dart';
 
 class SlateDatabase extends PowerSyncDatabase {
   SlateDatabase()

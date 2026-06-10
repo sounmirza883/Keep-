@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'repositories/note_repository.dart';
 import 'services/native_ai_service.dart';
 import 'services/powersync_service.dart';
 
@@ -23,3 +24,14 @@ NativeAiService nativeAi(Ref ref) => NativeAiService();
 Stream<AuthState> authStateChanges(Ref ref) {
   return ref.watch(supabaseProvider).auth.onAuthStateChange;
 }
+
+/// Current authenticated user id, or null when signed out.
+@riverpod
+String? currentUserId(Ref ref) {
+  ref.watch(authStateChangesProvider);
+  return ref.watch(supabaseProvider).auth.currentUser?.id;
+}
+
+@riverpod
+NoteRepository noteRepository(Ref ref) =>
+    NoteRepository(ref.watch(slateDbProvider));

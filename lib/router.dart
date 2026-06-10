@@ -10,6 +10,7 @@ import 'data/providers.dart';
 import 'ui/features/auth/views/login_screen.dart';
 import 'ui/features/auth/views/magic_link_screen.dart';
 import 'ui/features/auth/views/register_screen.dart';
+import 'ui/features/notes/views/note_editor_screen.dart';
 import 'ui/features/notes/views/note_list_screen.dart';
 
 part 'router.g.dart';
@@ -36,6 +37,11 @@ GoRouter router(Ref ref) {
       GoRoute(path: '/register', builder: (_, __) => const RegisterScreen()),
       GoRoute(path: '/magic-link', builder: (_, __) => const MagicLinkScreen()),
       GoRoute(path: '/notes', builder: (_, __) => const NoteListScreen()),
+      GoRoute(
+        path: '/notes/:noteId/edit',
+        builder: (_, state) =>
+            NoteEditorScreen(noteId: state.pathParameters['noteId']!),
+      ),
     ],
   );
 }

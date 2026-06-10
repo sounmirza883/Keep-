@@ -1,0 +1,23 @@
+# PowerSync sync rules — deploy to PowerSync Cloud or self-hosted instance.
+# Buckets are scoped per user; must mirror Supabase RLS exactly.
+
+bucket_definitions:
+  # User's own active data
+  user_notes:
+    parameters: SELECT request.user_id() as user_id
+    data:
+      - SELECT * FROM notes WHERE user_id = bucket.user_id AND is_deleted = false
+      - SELECT * FROM tasks WHERE user_id = bucket.user_id AND is_deleted = false
+      - SELECT * FROM tags WHERE user_id = bucket.user_id
+      - SELECT nt.* FROM note_tags nt
+          JOIN notes n ON nt.note_id = n.id
+          WHERE n.user_id = bucket.user_id
+      - SELECT * FROM attachments WHERE user_id = bucket.user_id
+
+  # Soft-deleted rows kept for the 30-day retention window (client purges)
+  user_deleted:
+    parameters: SELECT request.user_id() as user_id
+    priority: 10
+    data:
+      - SELECT * FROM notes WHERE user_id = bucket.user_id AND is_deleted = true
+      - SELECT * FROM tasks WHERE user_id = bucket.user_id AND is_deleted = true
