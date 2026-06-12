@@ -37,6 +37,7 @@ Future<void> _run() async {
 
   final db = SlateDatabase();
   await db.initialize();
+  await db.setupFullTextSearch();
 
   // Connect in background; offline-first means the app must not block on this.
   final connector = SupabasePowerSyncConnector(Supabase.instance.client);

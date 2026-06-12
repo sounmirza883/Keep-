@@ -76,12 +76,49 @@ class NoteRepository {
   }
 
   Future<List<Note>> searchNotes(String userId, String query) async {
-    final rows = await _db.getAll(
-      'SELECT * FROM notes WHERE user_id = ? AND is_deleted = 0 '
-      'AND (title LIKE ? OR content LIKE ?) ORDER BY updated_at DESC',
-      [userId, '%$query%', '%$query%'],
-    );
-    return _mapRows(rows);
+    final ftsQuery = _toFtsQuery(query);
+    if (ftsQuery == null) {
+      final rows = await _db.getAll(
+        'SELECT * FROM notes WHERE user_id = ? AND is_deleted = 0 '
+        'AND (title LIKE ? OR content LIKE ?) ORDER BY updated_at DESC',
+        [userId, '%$query%', '%$query%'],
+      );
+      return _mapRows(rows);
+    }
+
+    try {
+      final rows = await _db.getAll(
+        'SELECT n.* FROM notes n '
+        'JOIN notes_fts f ON f.id = n.id '
+        'WHERE n.user_id = ? AND n.is_deleted = 0 AND notes_fts MATCH ? '
+        'ORDER BY rank',
+        [userId, ftsQuery],
+      );
+      return _mapRows(rows);
+    } on Exception {
+      // notes_fts may not exist yet (e.g. before setupFullTextSearch runs).
+      final rows = await _db.getAll(
+        'SELECT * FROM notes WHERE user_id = ? AND is_deleted = 0 '
+        'AND (title LIKE ? OR content LIKE ?) ORDER BY updated_at DESC',
+        [userId, '%$query%', '%$query%'],
+      );
+      return _mapRows(rows);
+    }
+  }
+
+  /// Builds an FTS5 MATCH expression that treats the query as a prefix
+  /// search over each whitespace-separated term, e.g. "proj plan" ->
+  /// `"proj"* "plan"*`. Returns null for empty/whitespace-only input.
+  String? _toFtsQuery(String query) {
+    final terms = query
+        .split(RegExp(r'\s+'))
+        .map((t) => t.trim())
+        .where((t) => t.isNotEmpty)
+        .map((t) => t.replaceAll('"', ''))
+        .where((t) => t.isNotEmpty)
+        .toList();
+    if (terms.isEmpty) return null;
+    return terms.map((t) => '"$t"*').join(' ');
   }
 
   List<Note> _mapRows(sqlite.ResultSet rows) =>

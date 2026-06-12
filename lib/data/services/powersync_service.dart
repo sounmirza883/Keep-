@@ -10,6 +10,51 @@ class SlateDatabase extends PowerSyncDatabase {
           schema: appSchema,
           path: 'slate.db',
         );
+
+  /// Creates a local-only FTS5 index over notes, kept in sync via triggers
+  /// on the PowerSync-managed `notes` table. Not part of [appSchema] since
+  /// virtual tables aren't supported by the PowerSync schema builder.
+  Future<void> setupFullTextSearch() async {
+    await execute('''
+      CREATE VIRTUAL TABLE IF NOT EXISTS notes_fts USING fts5(
+        id UNINDEXED,
+        title,
+        content
+      )
+    ''');
+
+    await execute('''
+      CREATE TRIGGER IF NOT EXISTS notes_fts_insert AFTER INSERT ON notes
+      WHEN NEW.is_deleted = 0
+      BEGIN
+        INSERT INTO notes_fts (id, title, content) VALUES (NEW.id, NEW.title, NEW.content);
+      END
+    ''');
+
+    await execute('''
+      CREATE TRIGGER IF NOT EXISTS notes_fts_delete AFTER DELETE ON notes
+      BEGIN
+        DELETE FROM notes_fts WHERE id = OLD.id;
+      END
+    ''');
+
+    await execute('''
+      CREATE TRIGGER IF NOT EXISTS notes_fts_update AFTER UPDATE ON notes
+      BEGIN
+        DELETE FROM notes_fts WHERE id = OLD.id;
+        INSERT INTO notes_fts (id, title, content)
+          SELECT NEW.id, NEW.title, NEW.content WHERE NEW.is_deleted = 0;
+      END
+    ''');
+
+    // Backfill rows that existed (or were synced down) before the index
+    // and its triggers were created.
+    await execute('''
+      INSERT INTO notes_fts (id, title, content)
+      SELECT id, title, content FROM notes
+      WHERE is_deleted = 0 AND id NOT IN (SELECT id FROM notes_fts)
+    ''');
+  }
 }
 
 /// Bridges PowerSync auth with Supabase JWT sessions.
